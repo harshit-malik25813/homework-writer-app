@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Homework Generator</title>
+        <style>
+            :root {
+                --bg: #f3efe7;
+                --panel: #fffaf2;
+                --ink: #1f2937;
+                --muted: #6b7280;
+                --accent: #2f6f5e;
+                --accent-soft: #d9ebe4;
+                --border: #d7cdbd;
+                --shadow: 0 18px 50px rgba(31, 41, 55, 0.12);
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Georgia, "Times New Roman", serif;
+                background:
+                    radial-gradient(circle at top left, rgba(47, 111, 94, 0.14), transparent 28%),
+                    radial-gradient(circle at top right, rgba(210, 168, 92, 0.14), transparent 24%),
+                    var(--bg);
+                color: var(--ink);
+            }
+
+            .page {
+                max-width: 860px;
+                margin: 0 auto;
+                padding: 40px 20px 56px;
+            }
+
+            .hero {
+                display: grid;
+                gap: 10px;
+                margin-bottom: 24px;
+            }
+
+            .eyebrow {
+                margin: 0;
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                font-size: 0.78rem;
+                color: var(--accent);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-weight: 700;
+            }
+
+            h1 {
+                margin: 0;
+                font-size: clamp(2rem, 5vw, 3.6rem);
+                line-height: 1.05;
+            }
+
+            .subtitle {
+                margin: 0;
+                max-width: 62ch;
+                color: var(--muted);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 1rem;
+            }
+
+            .layout {
+                display: block;
+            }
+
+            .card {
+                background: rgba(255, 250, 242, 0.92);
+                border: 1px solid rgba(215, 205, 189, 0.8);
+                border-radius: 22px;
+                box-shadow: var(--shadow);
+                overflow: hidden;
+                backdrop-filter: blur(8px);
+            }
+
+            .card-header {
+                padding: 20px 22px 0;
+            }
+
+            .card-header h2 {
+                margin: 0;
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 1.25rem;
+            }
+
+            .card-header p {
+                margin: 8px 0 0;
+                color: var(--muted);
+                font-family: "Segoe UI", Arial, sans-serif;
+            }
+
+            form {
+                padding: 18px 22px 22px;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .field {
+                display: grid;
+                gap: 8px;
+            }
+
+            .field.full {
+                grid-column: 1 / -1;
+            }
+
+            label {
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 0.92rem;
+                font-weight: 700;
+                color: var(--ink);
+            }
+
+            input, textarea {
+                width: 100%;
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 12px 14px;
+                background: #fff;
+                color: var(--ink);
+                font: inherit;
+                outline: none;
+                transition: border-color 0.18s ease, box-shadow 0.18s ease;
+            }
+
+            textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            input:focus, textarea:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 4px rgba(47, 111, 94, 0.12);
+            }
+
+            .actions {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                margin-top: 18px;
+            }
+
+            button {
+                border: none;
+                border-radius: 999px;
+                padding: 12px 18px;
+                background: var(--accent);
+                color: #fff;
+                font: 700 0.95rem "Segoe UI", Arial, sans-serif;
+                cursor: pointer;
+                box-shadow: 0 14px 30px rgba(47, 111, 94, 0.24);
+            }
+
+            .hint {
+                margin: 0;
+                color: var(--muted);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 0.92rem;
+            }
+
+            @media (max-width: 860px) {
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="page">
+            <section class="hero">
+                <p class="eyebrow">Homework Generator</p>
+                <h1>Collect homework for every subject in one place.</h1>
+                <p class="subtitle">Fill in the form, submit it, and the page will show the formatted responses for Maths, Physics, Chemistry, Biology, SST, Hindi, English, and any additional notes.</p>
+            </section>
+
+            <section class="layout">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Homework Input</h2>
+                        <p>Enter only the subjects you need. Empty fields stay blank in the generated output page.</p>
+                    </div>
+                    <form method="post" action="{{ url_for('generate') }}">
+                        <!-- Each box below is one school subject. The user types homework into the matching box. -->
+                        <div class="grid">
+                            <div class="field">
+                                <label for="maths">Maths</label>
+                                <input id="maths" name="maths" value="{{ request.form.get('maths', '') }}" placeholder="e.g. Exercise 4, questions 1-10">
+                            </div>
+                            <div class="field">
+                                <label for="phy">Physics</label>
+                                <input id="phy" name="phy" value="{{ request.form.get('phy', '') }}" placeholder="e.g. Read chapter 5">
+                            </div>
+                            <div class="field">
+                                <label for="chem">Chemistry</label>
+                                <input id="chem" name="chem" value="{{ request.form.get('chem', '') }}" placeholder="e.g. Periodic table worksheet">
+                            </div>
+                            <div class="field">
+                                <label for="bio">Biology</label>
+                                <input id="bio" name="bio" value="{{ request.form.get('bio', '') }}" placeholder="e.g. Diagram practice">
+                            </div>
+                            <div class="field">
+                                <label for="sst">SST</label>
+                                <input id="sst" name="sst" value="{{ request.form.get('sst', '') }}" placeholder="e.g. Write short answers">
+                            </div>
+                            <div class="field">
+                                <label for="hindi">Hindi</label>
+                                <input id="hindi" name="hindi" value="{{ request.form.get('hindi', '') }}" placeholder="e.g. Learn poem lines">
+                            </div>
+                            <div class="field">
+                                <label for="eng">English</label>
+                                <input id="eng" name="eng" value="{{ request.form.get('eng', '') }}" placeholder="e.g. Read chapter and summarize">
+                            </div>
+                            <div class="field full">
+                                <label for="additional">Additional</label>
+                                <textarea id="additional" name="additional" placeholder="Any extra instructions or notes">{{ request.form.get('additional', '') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit">Generate homework</button>
+                            <p class="hint">Submitting sends the form to <code>/generate</code> and then opens <code>/output</code>.</p>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>
